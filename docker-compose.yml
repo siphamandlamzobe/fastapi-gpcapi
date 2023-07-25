@@ -1,0 +1,16 @@
+version: '1'
+
+services:
+  fastapi:
+    image: fastapi-gpc-api
+    ports:
+      - "8000:80"
+
+  gpcdb:
+    image: postgis/postgis
+    environment:
+      POSTGRES_USER: gpcdb
+      POSTGRES_PASSWORD: gpcdb
+      POSTGRES_DB: gpc_dev
+    volumes:
+      - ./db:/var/lib/postgresql/data
