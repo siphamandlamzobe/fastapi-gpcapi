@@ -79,5 +79,15 @@ def update_service_report(id: int, service_report: ServiceReportRequest):
         session.refresh(db_service_report)
         return db_service_report
 
+@app.delete("/api/servicereports/{id}")
+def delete_service_report(int: int):
+    with Session(engine) as session:
+        service_report = session.get(ServiceReport, int)
+        if not service_report:
+            raise HTTPException(status_code=404, detail="Service report not found")
+        session.delete(service_report)
+        session.commit()
+        return {"ok": True}
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
