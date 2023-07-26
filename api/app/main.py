@@ -87,5 +87,12 @@ def delete_service_report(*, session: Session = Depends(get_session),int: int):
         session.commit()
         return {"ok": True}
 
+@app.get("/api/servicereport/{id}", response_model=ServiceReportResponse)
+def service_report_by_id(*, session: Session = Depends(get_session),id: int) -> ServiceReportResponse:
+        service_report = session.get(ServiceReport, id)
+        if not service_report:
+            raise HTTPException(status_code=404, detail=f"No service report type with id = {id}")
+        return service_report
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
