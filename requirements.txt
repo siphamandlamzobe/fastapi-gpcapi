@@ -3,3 +3,6 @@ SQLAlchemy
 sqlmodel
 uvicorn
 psycopg2
+python-multipart
+pandas
+openpyxl
