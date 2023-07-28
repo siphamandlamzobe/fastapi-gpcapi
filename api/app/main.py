@@ -110,7 +110,6 @@ def service_report_by_id(*, session: Session = Depends(get_session), id: int) ->
     return service_report
 
 
-# Directory to save uploaded files
 UPLOAD_DIR = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "uploads")
 
@@ -120,10 +119,8 @@ PROCESSED_DIR = os.path.join(os.path.dirname(
 @app.post("/api/upload/")
 async def upload_file(file: UploadFile = File(...)):
     try:
-        # Create the uploads directory if it doesn't exist
         os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-        # Save the uploaded file to the uploads directory
         file_path = os.path.join(UPLOAD_DIR, file.filename)
         with open(file_path, "wb") as f:
             f.write(await file.read())
@@ -166,16 +163,12 @@ async def process_uploads(*, session: Session = Depends(get_session)):
 def get_files_in_directory(dir_path):
     res = []
 
-    # Iterate directory
     for file_path in os.listdir(dir_path):
-        # check if current file_path is a file
         if os.path.isfile(os.path.join(dir_path, file_path)):
-            # add filename to list
             res.append(file_path)
     return res
 
 def move_file_to_processed_dir(file_path):
-    # Move the file from the source directory to the destination directory
     processed_file = os.path.join(PROCESSED_DIR, os.path.basename(file_path))
     os.rename(file_path, processed_file)
 
