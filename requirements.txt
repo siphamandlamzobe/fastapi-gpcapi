@@ -2,7 +2,9 @@ fastapi
 SQLAlchemy
 sqlmodel
 uvicorn
-psycopg2
+psycopg2-binary
 python-multipart
 pandas
 openpyxl
+databases
+asyncpg

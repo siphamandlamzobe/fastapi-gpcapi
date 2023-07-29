@@ -2,10 +2,6 @@ from sqlmodel import Field, SQLModel
 from typing import Optional
 from datetime import datetime 
 
-class ServiceReportType(SQLModel, table=True):
-    id: int = Field(default=None,primary_key=True)
-    service_type: str
-
 class ServiceReportBase(SQLModel):
     attendance: int
     first_timers: int
