@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-
 from app.api.dependencies.database import get_db
 from app.models.service_report_type import ServiceReportTypeRequest, ServiceReportTypeResponse, ServiceReportType
 
@@ -15,7 +14,6 @@ def add_service_report_type(*, session: Session = Depends(get_db), servicereport
     session.refresh(new_service_type)
     return new_service_type
 
-
 @router.get("/{id}")
 def service_report_type_by_id(*, session: Session = Depends(get_db), id: int):
     reporttype = session.get(ServiceReportType, id)
@@ -23,7 +21,6 @@ def service_report_type_by_id(*, session: Session = Depends(get_db), id: int):
         raise HTTPException(
             status_code=404, detail=f"No service report type with id = {id}")
     return reporttype
-
 
 @router.get("/")
 def service_report_types(*, session: Session = Depends(get_db)):

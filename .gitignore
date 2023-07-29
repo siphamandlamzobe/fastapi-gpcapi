@@ -3,5 +3,6 @@ app.egg-info
 
 .vscode
 .venv
+.env
 
 db
