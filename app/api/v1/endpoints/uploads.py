@@ -7,7 +7,7 @@ import pandas as pd
 from app.api.dependencies.database import get_db
 from app.models.service_report import ServiceReport
 
-router = APIRouter(prefix="/uploads", tags=["ServiceReportTypes"])
+router = APIRouter(prefix="/uploads", tags=["uploads"])
 
 UPLOAD_DIR = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "uploads")
@@ -29,7 +29,7 @@ async def upload_file(file: UploadFile = File(...)):
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-@router.post("/api/processuploads/")
+@router.post("/process/")
 async def process_uploads(*, session: Session = Depends(get_db)):
     try:
         os.makedirs(PROCESSED_DIR, exist_ok=True)
