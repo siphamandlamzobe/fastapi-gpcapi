@@ -5,7 +5,7 @@ from sqlmodel import Session, select
 from app.models.service_report import ServiceReport, ServiceReportRequest, ServiceReportResponse
 from app.api.dependencies.database import get_db
 
-router = APIRouter(prefix="/servicereports", tags=["ServiceReports"])
+router = APIRouter()
 
 @router.post("/", response_model=ServiceReportResponse) 
 def add_service_report(*, session: Session = Depends(get_db), service_report: ServiceReportRequest):

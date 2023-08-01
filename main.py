@@ -2,8 +2,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI
 from app.api.dependencies.database import database
-
-from app.api.v1.endpoints import service_report, service_report_type, uploads
+from app.api.v1.api import api_router
 
 app = FastAPI(title="Service Report API")
 
@@ -15,9 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(service_report.router, prefix="/v1", tags=["Version 1"])
-app.include_router(service_report_type.router, prefix="/v1", tags=["Version 1"])
-app.include_router(uploads.router, prefix="/v1", tags=["Version 1"])
+app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
 async def startup() -> None:

@@ -7,7 +7,7 @@ import pandas as pd
 from app.api.dependencies.database import get_db
 from app.models.service_report import ServiceReport
 
-router = APIRouter(prefix="/uploads", tags=["uploads"])
+router = APIRouter()
 
 UPLOAD_DIR = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "uploads")

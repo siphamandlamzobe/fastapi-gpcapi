@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from app.api.dependencies.database import get_db
 from app.models.service_report_type import ServiceReportTypeRequest, ServiceReportTypeResponse, ServiceReportType
 
-router = APIRouter(prefix="/servicereporttypes", tags=["ServiceReportTypes"])
+router = APIRouter()
 
 @router.post("/", response_model=ServiceReportTypeResponse)
 def add_service_report_type(*, session: Session = Depends(get_db), servicereporttype: ServiceReportTypeRequest) -> ServiceReportTypeResponse:
