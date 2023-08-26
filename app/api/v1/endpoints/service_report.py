@@ -76,3 +76,11 @@ def delete_all_service_report_stats(*, session: Session = Depends(get_db)):
         
     session.commit()
     return JSONResponse(content={"message": str(deleted_report_count) + " Reports Stats Deleted"})
+
+@router.get("/{id}")
+def get_service_report(*, session: Session = Depends(get_db), int: int):
+    service_report = session.get(ServiceReport, int)
+    if not service_report:
+        raise HTTPException(status_code=404, detail="Service report not found")
+    
+    return service_report
