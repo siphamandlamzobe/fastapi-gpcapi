@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
-from app.models.service_report import ServiceReport, ServiceReportRequest, ServiceReportResponse
+from app.models.service_report import ServiceReport, ServiceReportRequest, ServiceReportResponse, ServiceReportStats
 from app.api.dependencies.database import get_db
 
 router = APIRouter()
@@ -47,3 +48,31 @@ def delete_service_report(*, session: Session = Depends(get_db), int: int):
     session.delete(service_report)
     session.commit()
     return {"ok": True}
+
+@router.delete("/")
+def delete_all_service_reports(*, session: Session = Depends(get_db)):
+    service_reports = session.exec(select(ServiceReport))
+    if not service_reports:
+        raise HTTPException(status_code=404, detail="Service report not found")
+    
+    deleted_report_count = 0
+    for service_report in service_reports:
+        session.delete(service_report)
+        deleted_report_count += 1
+        
+    session.commit()
+    return JSONResponse(content={"message": str(deleted_report_count) + " Reports Deleted"})
+
+@router.delete("/removestats/")
+def delete_all_service_report_stats(*, session: Session = Depends(get_db)):
+    service_report_stats = session.exec(select(ServiceReportStats))
+    if not service_report_stats:
+        raise HTTPException(status_code=404, detail="Service report stats not found")
+    
+    deleted_report_count = 0
+    for service_report_stat in service_report_stats:
+        session.delete(service_report_stat)
+        deleted_report_count += 1
+        
+    session.commit()
+    return JSONResponse(content={"message": str(deleted_report_count) + " Reports Stats Deleted"})

@@ -1,5 +1,5 @@
 import os
-from sqlmodel import Session, create_engine
+from sqlmodel import SQLModel, Session, create_engine
 
 from databases import Database
 
@@ -14,4 +14,6 @@ engine = create_engine(DATABASE_URL)
 
 def get_db():
     with Session(engine) as connection:
+        SQLModel.metadata.create_all(engine)
         yield connection
+        
