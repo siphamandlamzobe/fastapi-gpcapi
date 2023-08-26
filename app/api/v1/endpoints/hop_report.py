@@ -9,6 +9,7 @@ from app.models.hop_report import HopReport, HopReportRequest, HopReportResponse
 
 router = APIRouter()
 
+
 @router.post("/", response_model=HopReportResponse)
 def add_hop_report(*, session: Session = Depends(get_db), hop_report: HopReportRequest):
     new_hop_report = HopReport.from_orm(hop_report)
@@ -66,3 +67,12 @@ def delete_all_hop_reports(*, session: Session = Depends(get_db)):
 
     session.commit()
     return JSONResponse(content={"message": str(deleted_report_count) + " Reports Deleted"})
+
+
+@router.get("/{id}")
+def get_hop_report(*, session: Session = Depends(get_db), int: int):
+    hop_report = session.get(HopReport, int)
+    if not hop_report:
+        raise HTTPException(status_code=404, detail="hop report not found")
+
+    return hop_report
