@@ -3,8 +3,10 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
+from app.api.auth import get_current_user
 from app.models.service_report import ServiceReport, ServiceReportRequest, ServiceReportResponse, ServiceReportStats
 from app.api.dependencies.database import get_db
+from app.models.user import User
 
 router = APIRouter()
 
@@ -18,7 +20,7 @@ def add_service_report(*, session: Session = Depends(get_db), service_report: Se
     return new_service_report
 
 @router.get("/", response_model=List[ServiceReportResponse])
-def get_service_reports(*, session: Session = Depends(get_db), offset: int = 0, limit: int = Query(default=100, lte=100)):
+def get_service_reports(*, session: Session = Depends(get_db), offset: int = 0, limit: int = Query(default=100, lte=100),  user: User = Depends(get_current_user)):
     service_reports = session.exec(
         select(ServiceReport).offset(offset).limit(limit)).all()
     return service_reports
