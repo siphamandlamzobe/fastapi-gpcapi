@@ -9,3 +9,4 @@ openpyxl
 databases
 asyncpg
 passlib
+python-jose[cryptography]
