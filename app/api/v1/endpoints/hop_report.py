@@ -3,15 +3,17 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
+from app.api.auth import get_current_active_user
 from app.api.dependencies.database import get_db
 
 from app.models.hop_report import HopReport, HopReportRequest, HopReportResponse
+from app.models.user import User
 
 router = APIRouter()
 
 
 @router.post("/", response_model=HopReportResponse)
-def add_hop_report(*, session: Session = Depends(get_db), hop_report: HopReportRequest):
+def add_hop_report(*, session: Session = Depends(get_db), hop_report: HopReportRequest, user: User = Depends(get_current_active_user)):
     new_hop_report = HopReport.from_orm(hop_report)
 
     session.add(new_hop_report)
@@ -21,14 +23,14 @@ def add_hop_report(*, session: Session = Depends(get_db), hop_report: HopReportR
 
 
 @router.get("/", response_model=List[HopReportResponse])
-def get_hop_reports(*, session: Session = Depends(get_db), offset: int = 0, limit: int = Query(default=100, lte=100)):
+def get_hop_reports(*, session: Session = Depends(get_db), offset: int = 0, limit: int = Query(default=100, lte=100), user: User = Depends(get_current_active_user)):
     hop_reports = session.exec(
         select(HopReport).offset(offset).limit(limit)).all()
     return hop_reports
 
 
 @router.patch("/{id}", response_model=HopReportResponse)
-def update_hop_report(*, session: Session = Depends(get_db), id: int, hop_report: HopReportRequest):
+def update_hop_report(*, session: Session = Depends(get_db), id: int, hop_report: HopReportRequest, user: User = Depends(get_current_active_user)):
     db_hop_report = session.get(HopReport, id)
 
     if not db_hop_report:
@@ -45,7 +47,7 @@ def update_hop_report(*, session: Session = Depends(get_db), id: int, hop_report
 
 
 @router.delete("/{id}")
-def delete_hop_report(*, session: Session = Depends(get_db), int: int):
+def delete_hop_report(*, session: Session = Depends(get_db), int: int, user: User = Depends(get_current_active_user)):
     hop_report = session.get(HopReport, int)
     if not hop_report:
         raise HTTPException(status_code=404, detail="Hop report not found")
@@ -55,7 +57,7 @@ def delete_hop_report(*, session: Session = Depends(get_db), int: int):
 
 
 @router.delete("/")
-def delete_all_hop_reports(*, session: Session = Depends(get_db)):
+def delete_all_hop_reports(*, session: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
     hop_reports = session.exec(select(HopReport))
     if not hop_reports:
         raise HTTPException(status_code=404, detail="Hop report not found")
@@ -70,7 +72,7 @@ def delete_all_hop_reports(*, session: Session = Depends(get_db)):
 
 
 @router.get("/{id}")
-def get_hop_report(*, session: Session = Depends(get_db), int: int):
+def get_hop_report(*, session: Session = Depends(get_db), int: int, user: User = Depends(get_current_active_user)):
     hop_report = session.get(HopReport, int)
     if not hop_report:
         raise HTTPException(status_code=404, detail="hop report not found")
