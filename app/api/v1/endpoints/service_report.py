@@ -11,7 +11,7 @@ from app.models.user import User
 router = APIRouter()
 
 @router.post("/", response_model=ServiceReportResponse) 
-def add_service_report(*, session: Session = Depends(get_db), service_report: ServiceReportRequest):
+def add_service_report(*, session: Session = Depends(get_db), service_report: ServiceReportRequest, user: User = Depends(get_current_active_user)):
     new_service_report = ServiceReport.from_orm(service_report)
 
     session.add(new_service_report)
@@ -26,7 +26,7 @@ def get_service_reports(*, session: Session = Depends(get_db), offset: int = 0, 
     return service_reports
 
 @router.patch("/{id}", response_model=ServiceReportResponse)
-def update_service_report(*, session: Session = Depends(get_db), id: int, service_report: ServiceReportRequest):
+def update_service_report(*, session: Session = Depends(get_db), id: int, service_report: ServiceReportRequest, user: User = Depends(get_current_active_user)):
     db_service_report = session.get(ServiceReport, id)
 
     if not db_service_report:
@@ -43,7 +43,7 @@ def update_service_report(*, session: Session = Depends(get_db), id: int, servic
 
 
 @router.delete("/{id}")
-def delete_service_report(*, session: Session = Depends(get_db), int: int):
+def delete_service_report(*, session: Session = Depends(get_db), int: int, user: User = Depends(get_current_active_user)):
     service_report = session.get(ServiceReport, int)
     if not service_report:
         raise HTTPException(status_code=404, detail="Service report not found")
@@ -52,7 +52,7 @@ def delete_service_report(*, session: Session = Depends(get_db), int: int):
     return {"ok": True}
 
 @router.delete("/")
-def delete_all_service_reports(*, session: Session = Depends(get_db)):
+def delete_all_service_reports(*, session: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
     service_reports = session.exec(select(ServiceReport))
     if not service_reports:
         raise HTTPException(status_code=404, detail="Service report not found")
@@ -66,7 +66,7 @@ def delete_all_service_reports(*, session: Session = Depends(get_db)):
     return JSONResponse(content={"message": str(deleted_report_count) + " Reports Deleted"})
 
 @router.delete("/removestats/")
-def delete_all_service_report_stats(*, session: Session = Depends(get_db)):
+def delete_all_service_report_stats(*, session: Session = Depends(get_db), user: User = Depends(get_current_active_user)):
     service_report_stats = session.exec(select(ServiceReportStats))
     if not service_report_stats:
         raise HTTPException(status_code=404, detail="Service report stats not found")
@@ -80,7 +80,7 @@ def delete_all_service_report_stats(*, session: Session = Depends(get_db)):
     return JSONResponse(content={"message": str(deleted_report_count) + " Reports Stats Deleted"})
 
 @router.get("/{id}")
-def get_service_report(*, session: Session = Depends(get_db), int: int):
+def get_service_report(*, session: Session = Depends(get_db), int: int, user: User = Depends(get_current_active_user)):
     service_report = session.get(ServiceReport, int)
     if not service_report:
         raise HTTPException(status_code=404, detail="Service report not found")
